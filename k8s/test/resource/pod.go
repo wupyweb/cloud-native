@@ -57,23 +57,54 @@ func main() {
 		namespace := "default"
 
 		// Examples for listing pods in default namespace
-		//pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(),metav1.ListOptions{})
-		//if err != nil {
-		//	panic(err)
-		//}
-		//for _, pod := range pods.Items {
-		//	fmt.Printf("%s\t%s\n",pod.Name, pod.Status.PodIP)
-		//}
-
-		// Examples for listing deployments in default namespace
-		deploys, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+		pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 		if err != nil {
 			panic(err)
 		}
-		for _, deploy := range deploys.Items {
-			fmt.Printf("%s\t%d/%d\n", deploy.Name, deploy.Status.ReadyReplicas, deploy.Status.Replicas)
+		for _, pod := range pods.Items {
+			fmt.Printf("%s\t%s\n", pod.Name, pod.Status.PodIP)
 		}
 
-		time.Sleep(10 * time.Second)
+		// Examples for listing deployments in default namespace
+		//deploys, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+		//if err != nil {
+		//	panic(err)
+		//}
+		//for _, deploy := range deploys.Items {
+		//	fmt.Printf("%s\t%d/%d\n", deploy.Name, deploy.Status.ReadyReplicas, deploy.Status.Replicas)
+		//}
+
+		// Example for create pod
+		//pod := v1.Pod{
+		//	TypeMeta: metav1.TypeMeta{
+		//		Kind:       "pod",
+		//		APIVersion: "v1",
+		//	},
+		//	ObjectMeta: metav1.ObjectMeta{
+		//		Name:      "client-go-test-pod",
+		//		Namespace: "default",
+		//	},
+		//	Spec: v1.PodSpec{
+		//		Containers: []v1.Container{
+		//			{
+		//				Name:  "hostname",
+		//				Image: "ocscaas/serve_hostname",
+		//			},
+		//		},
+		//	},
+		//	//Status:     v1.PodStatus{},
+		//}
+		//_, err = clientset.CoreV1().Pods(namespace).Create(context.TODO(), &pod, metav1.CreateOptions{})
+		//if err != nil {
+		//	panic(err)
+		//}
+
+		// Example for modify pod
+		//clientset.CoreV1().Pods(namespace).Patch(context.TODO(),"client-go-test-pod",)
+
+		// Example for delete pod
+		clientset.CoreV1().Pods(namespace).Delete(context.TODO(), "client-go-test-pod", metav1.DeleteOptions{})
+
+		time.Sleep(100 * time.Second)
 	}
 }
